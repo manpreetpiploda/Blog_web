@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 const profileSchema = new mongoose.Schema(
     {
         gender:{
-            type:String
+            type:String,
+            enum: ['Male', 'Female', 'Other'],
+            default: 'Male',
         },
         about:{
             type:String
@@ -13,7 +15,10 @@ const profileSchema = new mongoose.Schema(
         },
         dateOfBirth:{
             type:String
-        }
+        },
+        profilePicture:{
+            type:String,
+        },
         // dob: {
         //     type: Date,
         //     required: true,

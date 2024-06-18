@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken'
 
+const SALT_WORK_FACTOR=10;
 const userSchema= new mongoose.Schema(
     {
         firstName:{
@@ -27,7 +30,7 @@ const userSchema= new mongoose.Schema(
                 'Please fill a valid email address',
             ],
         },
-        profilePicture:{
+        token:{
             type:String,
         },
         posts:[{
@@ -44,6 +47,51 @@ const userSchema= new mongoose.Schema(
         }]
     },
     { timestamps:true }
-)
+);
 
+// Pre-save hook to hash the password before saving
+userSchema.pre('save', function(next) {
+    const user = this;
+  
+    // Only hash the password if it has been modified (or is new)
+    if (!user.isModified('password')) return next();
+  
+    // Generate a salt
+    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+      if (err) return next(err);
+  
+      // Hash the password using the generated salt
+      bcrypt.hash(user.password, salt, function(err, hash) {
+        if (err) return next(err);
+  
+        // Override the cleartext password with the hashed one
+        user.password = hash;
+        next();
+      });
+    });
+});
+
+//verifying the password
+
+userSchema.methods.comparePassword = function(passwordEnterd, cb){
+    bcrypt.compare(passwordEnterd, this.password, function(err, isMatch){
+        if (err) return cb(err);
+        cb(null, isMatch);
+    });
+
+}
+
+// For generating JWT 
+userSchema.methods.generateAccessToken= function(){
+    return jwt.sign(
+        {
+            _id:this._id,
+            email: this.email,
+        },
+        process.env.ACCESS_TOKEN_SECTET,
+        {
+            expiresIn:ACCESS_TOKEN_EXPIRY
+        }
+    )
+}
 export const User=mongoose.model("User", userSchema);
