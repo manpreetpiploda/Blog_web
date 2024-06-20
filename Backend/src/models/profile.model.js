@@ -8,13 +8,17 @@ const profileSchema = new mongoose.Schema(
             default: 'Male',
         },
         about:{
-            type:String
+            type:String,
+            trim:true,
+            maxlength:500,            
         },
         phoneNumber:{
-            type:Number
+            type:Number,
+            minlength:10,
+            maxlength:10
         },
         dateOfBirth:{
-            type:String
+            type:Date
         },
         profilePicture:{
             type:String,

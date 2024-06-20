@@ -3,7 +3,6 @@ import { OTP } from "../models/otp.model.js";
 import { Profile } from "../models/profile.model.js";
 
 import otpGenerator from "otp-generator"
-import bcrypt, { compare } from "bcrypt";
 
 const signup = async (req, res) => {
     try{

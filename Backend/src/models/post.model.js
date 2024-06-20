@@ -10,13 +10,17 @@ const postSchema = new mongoose.Schema(
             default:Date.now,
             immutable:true,
         },
+        status: {
+            type: String,
+            enum: ["Draft", "Published"],
+        },
         //store the id of the user who created it
         postCreater:{
             type:mongoose.Schema.Types.ObjectId,
             ref:'User'
         },
-    
-    }
+    },
+    { timestamps: true }
 )
 
 export const Post= mongoose.model("Post", postSchema);
