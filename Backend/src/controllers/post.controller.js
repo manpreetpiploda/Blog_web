@@ -9,6 +9,7 @@ const createPost = async (req, res) =>{
         const { text } = req.body;
         const {id}=req.user;
 
+        console.log("Inside create post controller")
         //check user is present
         if(!id){
             return res.status(400).json({
@@ -16,7 +17,7 @@ const createPost = async (req, res) =>{
                 message:"User is not present "
             })
         }
-        const user = await User.findById({id});
+        const user = await User.findById(id);
 
         if(!user){
             return res.status(400).json({
@@ -24,12 +25,13 @@ const createPost = async (req, res) =>{
                 message:"User is not present "
             })
         }
+        console.log("user found", user);
         //String post in database
         const newPost = await Post.create({
             text,
             postCreater:user._id,
         })
-        console.log("post is stored in database ", response);
+        console.log("post is stored in database ", newPost);
 
         // add the new post to the user schema
         await User.findByIdAndUpdate(
@@ -113,9 +115,11 @@ const getAllPosts = async (req, res)=> {
         const allPosts = await Post.find(
             { status: 'Published' },
             'text postCreater' // Specify the fields to include
-          )
+            )
             .populate('postCreater', 'firstName lastName email') // Specify the fields to populate
             .exec();
+         
+        console.log("All posts", allPosts);    
 
         return res.status(200).json({
             success: true,
@@ -135,7 +139,8 @@ const getAllPosts = async (req, res)=> {
 const deletePost = async (req, res) =>{
     try{
         const userId = req.user.id;
-        const postId = req.post.id;
+        // const postId = req.post.id;
+        const { postId }=req.body;
 
         if(!userId){
             return res.status(400).json({
@@ -144,7 +149,7 @@ const deletePost = async (req, res) =>{
             })
         }
 
-        const user =  User.findById({_id:userId});
+        const user =  User.findById(userId);
         if(!user){
             return res.status(400).json({
                 success:false,

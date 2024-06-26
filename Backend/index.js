@@ -14,6 +14,6 @@ connectDB()
     console.log("MONGO db connection failed !!! ", err);
 })
 
-// app.get("/", (req, res) => {
-//     res.send("Hello, this is the response to your get request!");
-// });
+app.get("/", (req, res) => {
+    res.send("Hello, this is the response to your get request!");
+});

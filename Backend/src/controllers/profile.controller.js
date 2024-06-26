@@ -14,15 +14,17 @@ const updateProfile = async(req, res)=> {
         } = req.body;
 
         const userId = req.user.id;
+        console.log("userId ", userId)
 
         if(!userId){
             return res.status(400).json({
                 success:false,
-                message:"User is not present "
+                message:"User ID is not present "
             })
         }
 
-        const user =  User.findById(userId);
+        const user =await  User.findById(userId);
+        console.log("user", user);
         if(!user){
             return res.status(400).json({
                 success:false,
@@ -30,6 +32,7 @@ const updateProfile = async(req, res)=> {
             })
         }
         //finding user profile
+        console.log("user profile", user.profile);
         const profile = await Profile.findById(user.profile);
         if (!profile) {
             return res.status(404).json({

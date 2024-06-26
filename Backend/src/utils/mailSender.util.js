@@ -27,6 +27,4 @@ const mailSender = async (email,otp)=>{
     }
 }
 
-export {
-    mailSender
-}
+export default  mailSender;

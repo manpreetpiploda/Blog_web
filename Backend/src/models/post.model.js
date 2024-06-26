@@ -13,6 +13,7 @@ const postSchema = new mongoose.Schema(
         status: {
             type: String,
             enum: ["Draft", "Published"],
+            default:"Published"
         },
         //store the id of the user who created it
         postCreater:{

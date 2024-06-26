@@ -15,12 +15,13 @@ const signup = async (req, res) => {
             otp,
         }=req.body;
 
-        if(firstName || password || confirmPassword || email || otp){
+        if(!firstName || !password || !confirmPassword || !email || !otp){
             return res.status(403).json({
                 success: false,
                 message: "All Fields are required",
               })
         }
+        console.log("All fields are present")
         //password and confirmPassword mattches or not
         if (password !== confirmPassword) {
             return res.status(400).json({
@@ -29,6 +30,7 @@ const signup = async (req, res) => {
                 "Password and Confirm Password do not match. Please try again.",
             })
         }
+        console.log("password checked")
         //check email is unique
         const checkEmail= await User.findOne({email});
         if(checkEmail){
@@ -37,16 +39,20 @@ const signup = async (req, res) => {
                 message:"User is already exist with this email ",
             })
         }
+        console.log("OTP ", otp);
+        console.log(typeof otp);
         //verifying otp
-        const response = await OTP.findOne({email}).sort({createdAt: -1}).exex();
+        const response = await OTP.findOne({email}).sort({createdAt: -1}).exec();
+        console.log(typeof response.otp);
         console.log("response from OTP ", response);
+        
 
-        if (!latestOtp) {
+        if (!response) {
             return res.status(400).json({
                 success:false,
                 message:"OTP not found ",
             })
-        }else if(latestOtp.otp !==otp){
+        }else if(String(response.otp) !==otp){
             return res.status(400).json({
                 success:false,
                 message: "The OTP is not valid",
@@ -67,7 +73,6 @@ const signup = async (req, res) => {
             lastName,
             password,
             email,
-            otp,
             profile:profile._id,
         })
         console.log("User is created ");
@@ -92,16 +97,16 @@ const login = async (req, res) => {
     try{
         const { email, password } = req.body;
 
-        if(email || password ){
+        if(!email || !password ){
             return res.status(403).json({
                 success:false,
-                message:"All fields are required "
+                message:"Password and email required "
             })
         }
-
+        console.log("before  verifying user");
         //verify user is present or not using email
         const user = await User.findOne({email});
-        console.log("Checking user present or not on the basis of email ", userPresent)
+        console.log("Checking user present or not on the basis of email ", user)
 
         if(!user){
             return res.status(403).json({
@@ -109,6 +114,7 @@ const login = async (req, res) => {
                 message:"User is not present "
             })
         }
+        
         
         // verify password
         // const passwordCheck =  bcrypt.compare(password, userPresent.password);
@@ -132,20 +138,24 @@ const login = async (req, res) => {
                 })
             }
         })
+        console.log("password is correct ");
+        console.log("User ", user)
 
-        const token= user.generateAccessToken();
+        // const token=await user.generateAccessToken();
+        const token = user.generateAccessToken();
 
         console.log("Printing usr before adding token ", user);
         //Save token to user document in database
         user.token=token;
         // user.password=undefined;
+        await user.save();
 
         console.log("Printing usr after adding token ", user);
         const options = {
-            expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+            expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
             httpOnly: true,
         }
-        res.cookie("token", token, options).status(200).json({
+        return res.cookie("token", token, options).status(200).json({
             success: true,
             token,
             user,
