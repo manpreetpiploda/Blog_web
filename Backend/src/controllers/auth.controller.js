@@ -176,12 +176,13 @@ const sendotp = async (req, res)=>{
     try{
         const { email }=req.body;
 
-        if(!email){
+        if(!email){ 
             return res.send(401).json({
-              success:true,
+              success:true, 
               message:"Please enter the data",
             })
         }
+        console.log("Email is ", email);
         // Check if user is already present
         // Find user with provided email
         const checkUserPresent = await User.findOne({ email })
@@ -230,7 +231,11 @@ const sendotp = async (req, res)=>{
         }
     catch(error){
         console.log(error.message)
-        return res.status(500).json({ success: false, error: error.message })
+        return res.status(500).json({ 
+            success: false, 
+            error: error.message,
+            message:"Error occur while sending the email " 
+        })
     }
 
 }
