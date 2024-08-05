@@ -1,0 +1,30 @@
+export const recomendationButtonData=[
+    {
+        id:1,
+        title:"Philosophy",
+    },
+    {
+        id:2,
+        title:"Freelancing",
+    },
+    {
+        id:3,
+        title:"Language",
+    },
+    {
+        id:4,
+        title:"World",
+    },
+    {
+        id:5,
+        title:"Spritulaty",
+    },
+    {
+        id:6,
+        title:"Economy",
+    },
+    {
+        id:7,
+        title:"Future",
+    },
+]

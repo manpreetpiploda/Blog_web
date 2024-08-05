@@ -11,6 +11,12 @@ export default {
   theme: {
     extend: {},
   },
+  variants: {
+    extend: {
+      position: ['responsive', 'sticky'],
+      zIndex: ['responsive', 'hover', 'focus'],
+    },
+  },
   plugins: [],
 }
 

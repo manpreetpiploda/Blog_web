@@ -33,5 +33,11 @@
     border-radius: 50%;
     border: 9px solid #f1f2ff;
     animation: spinner-bulqg1 0.8s infinite linear alternate,
-      spinner-oaa3wk 1.6s infinite linear;
-  }
+    spinner-oaa3wk 1.6s infinite linear;
+}
+/* .sticky-class{
+    position: sticky;
+    top: 0;
+    background-color: white; 
+    z-index: 10; 
+} */
